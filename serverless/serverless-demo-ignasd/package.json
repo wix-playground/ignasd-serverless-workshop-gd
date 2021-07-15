@@ -18,6 +18,7 @@
     "test": "jest --detectOpenHandles --forceExit"
   },
   "dependencies": {
+    "@wix/ambassador-msm-server": "^3.0.13",
     "@wix/serverless-api": "*"
   },
   "devDependencies": {
