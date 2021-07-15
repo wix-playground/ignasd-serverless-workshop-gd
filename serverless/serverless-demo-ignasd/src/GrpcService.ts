@@ -4,7 +4,7 @@ import api = com.wixpress.media.pix.server.api;
 
 export class PixService extends api.PixServer {
   private readonly grpcCtx: GrpcServiceContext;
-  constructor(grpcCtx: GrpcServiceContext) {
+  public constructor (grpcCtx: GrpcServiceContext) {
     super();
     this.grpcCtx = grpcCtx;
   }
