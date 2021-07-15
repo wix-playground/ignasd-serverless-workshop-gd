@@ -8,6 +8,8 @@ describe('hello, serverless', () => {
   it('should say hello', async () => {
     const result = await axios.get(testkit.getUrl('/hello'));
     expect(result.data).toStrictEqual('hello, serverless');
+    const biEvents = testkit.bi.events;
+    expect(biEvents).toContainEqual({evid: 420, message: 'Something nice has happened', src: 42});
   });
 
   it('should check permissions', async () => {

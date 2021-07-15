@@ -13,6 +13,8 @@ module.exports = function builder (builder: FunctionsBuilder) {
     .addWebFunction('GET', '/hello', async (ctx) => {
       ctx.logger.info('Hello called');
       ctx.metrics.meter('hello')(1);
+      const biEvent = { evid: 420, message: 'Something nice has happened' };
+      await ctx.biLogger.log(biEvent);
       return new FullHttpResponse({ status: 200, body: 'hello, serverless' });
     })
 
@@ -58,5 +60,7 @@ module.exports = function builder (builder: FunctionsBuilder) {
       });
     })
 
-    .addGrpcService(PixService);
+    .addGrpcService(PixService)
+
+    .withBiInfo({ src: 42 });
 };
