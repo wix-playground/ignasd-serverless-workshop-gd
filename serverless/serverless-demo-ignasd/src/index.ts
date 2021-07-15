@@ -2,6 +2,8 @@ import type { FunctionsBuilder, KVItem } from '@wix/serverless-api';
 import { FullHttpResponse, HttpError } from '@wix/serverless-api';
 import { MsmServer } from '@wix/ambassador-msm-server/rpc';
 
+import { PixService } from './GrpcService'
+
 interface SiteNameChecked extends KVItem {
   timesChecked: number
 }
@@ -54,5 +56,7 @@ module.exports = function builder (builder: FunctionsBuilder) {
         status: 403,
         message: 'Nope',
       });
-    });
+    })
+
+    .addGrpcService(PixService);
 };

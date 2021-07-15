@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@wix/ambassador-msm-server": "^3.0.13",
+    "@wix/media-pix-api": "^1.0.27",
     "@wix/serverless-api": "*"
   },
   "devDependencies": {
