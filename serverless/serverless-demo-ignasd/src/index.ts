@@ -1,6 +1,6 @@
 import type { FunctionsBuilder } from '@wix/serverless-api';
 import { FullHttpResponse } from '@wix/serverless-api';
-import { MsmServer } from '@wix/ambassador-msm-server';
+import { MsmServer } from '@wix/ambassador-msm-server/rpc';
 
 module.exports = function builder (builder: FunctionsBuilder) {
   return builder
