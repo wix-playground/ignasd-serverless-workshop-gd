@@ -9,4 +9,21 @@ describe('hello, serverless', () => {
     const result = await axios.get(testkit.getUrl('/hello'));
     expect(result.data).toStrictEqual('hello, serverless');
   });
+
+  it('should check permissions', async () => {
+    const resultWithoutPerms = await axios.get(testkit.getUrl('/restricted'), {
+      validateStatus: () => true, // to do not throw
+    });
+    expect(resultWithoutPerms.status).toStrictEqual(403);
+
+    const headers = testkit.apiGwTestkit
+      .callContextBuilder()
+      .withPermission('multipass')
+      .headers();
+    const resultWithPerms = await axios.get(testkit.getUrl('/restricted'), {
+      headers: headers,
+    });
+    expect(resultWithPerms.status).toStrictEqual(200);
+    expect(resultWithPerms.data).toStrictEqual('Yippee ki-yay!');
+  });
 });

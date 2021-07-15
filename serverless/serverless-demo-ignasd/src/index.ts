@@ -1,6 +1,10 @@
-import type { FunctionsBuilder } from '@wix/serverless-api';
-import { FullHttpResponse } from '@wix/serverless-api';
+import type { FunctionsBuilder, KVItem } from '@wix/serverless-api';
+import { FullHttpResponse, HttpError } from '@wix/serverless-api';
 import { MsmServer } from '@wix/ambassador-msm-server/rpc';
+
+interface SiteNameChecked extends KVItem {
+  timesChecked: number
+}
 
 module.exports = function builder (builder: FunctionsBuilder) {
   return builder
@@ -9,14 +13,46 @@ module.exports = function builder (builder: FunctionsBuilder) {
       ctx.metrics.meter('hello')(1);
       return new FullHttpResponse({ status: 200, body: 'hello, serverless' });
     })
+
     .addWebFunction('GET', '/isfree/:sitename', async (ctx, req) => {
+      const { sitename } = req.params;
+      
       await ctx.greyhound.produce('serverless-demo-topic-1', {
-        msg: `/isfree for ${String(req.params.sitename)} called`,
+        msg: `/isfree for ${String(sitename)} called`,
       });
+
+      await ctx.cloudStore.keyValueStore.getAndUpdate<SiteNameChecked>(
+        sitename,
+        (counter) => {
+          if (typeof counter?.timesChecked === 'number') {
+            return {
+              key: sitename,
+              timesChecked: counter.timesChecked + 1,
+            };
+          }
+          return {
+            key: sitename,
+            timesChecked: 0,
+          };
+        },
+      );
+
       const msmServerClient = MsmServer().MetaSiteReadApi()(ctx.aspects);
       return await msmServerClient.isSiteNameFree({ siteName: req.params.sitename });
     })
+
     .addGreyhoundConsumer('serverless-demo-topic-1', async (ctx, msg) => {
       ctx.logger.info('Got message in "serverless-demo-topic-1"', msg);
+    })
+
+    .addWebFunction('GET', '/restricted', async (ctx) => {
+      const passed: boolean = await ctx.apiGatewayClient.isPermitted('multipass');
+      if (passed) {
+        return 'Yippee ki-yay!';
+      }
+      throw new HttpError({
+        status: 403,
+        message: 'Nope',
+      });
     });
 };
