@@ -4,7 +4,7 @@ import { MsmServer } from '@wix/ambassador-msm-server/rpc';
 
 module.exports = function builder (builder: FunctionsBuilder) {
   return builder
-    .addWebFunction('GET', '/hello', async () => {
+    .addWebFunction('GET', '/hello', async (ctx) => {
       ctx.logger.info('Hello called');
       ctx.metrics.meter('hello')(1);
       return new FullHttpResponse({ status: 200, body: 'hello, serverless' });
