@@ -12,7 +12,7 @@ describe('hello, serverless', () => {
 
   it('should check permissions', async () => {
     const resultWithoutPerms = await axios.get(testkit.getUrl('/restricted'), {
-      validateStatus: () => true, // to do not throw
+      validateStatus: () => true,
     });
     expect(resultWithoutPerms.status).toStrictEqual(403);
 
