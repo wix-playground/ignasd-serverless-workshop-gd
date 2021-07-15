@@ -10,7 +10,13 @@ module.exports = function builder (builder: FunctionsBuilder) {
       return new FullHttpResponse({ status: 200, body: 'hello, serverless' });
     })
     .addWebFunction('GET', '/isfree/:sitename', async (ctx, req) => {
+      await ctx.greyhound.produce('serverless-demo-topic-1', {
+        msg: `/isfree for ${String(req.params.sitename)} called`,
+      });
       const msmServerClient = MsmServer().MetaSiteReadApi()(ctx.aspects);
       return await msmServerClient.isSiteNameFree({ siteName: req.params.sitename });
+    })
+    .addGreyhoundConsumer('serverless-demo-topic-1', async (ctx, msg) => {
+      ctx.logger.info('Got message in "serverless-demo-topic-1"', msg);
     });
 };
