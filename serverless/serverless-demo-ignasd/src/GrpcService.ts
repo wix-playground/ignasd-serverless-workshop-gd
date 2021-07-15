@@ -22,7 +22,12 @@ export class PixService extends api.PixServer {
     req: api.ImportFileRequest
   ): Promise<api.ImportFileResponse> {
     const ctx = this.grpcCtx.contextProvider(aspects);
+
+    if (await ctx.petri.conductExperiment('Create robot chicken', 'false') === 'true') {
+      throw new Error('Robot chicken escaped!');
+    }
+
     ctx.logger.info(`importFile called with ${JSON.stringify(req)}`);
-    throw new Error('Not implemented');
+    return {};
   }
 }

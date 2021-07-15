@@ -29,6 +29,7 @@
     "@wix/serverless-jest-config": "*",
     "@wix/serverless-testkit": "*",
     "@wix/serverless-tsc-config": "*",
+    "@wix/wix-aspects": "^1.0.1428",
     "axios": "0.21.1",
     "eslint": "7.23.0",
     "jest": "26.6.3",
